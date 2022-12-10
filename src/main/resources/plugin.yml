@@ -1,0 +1,6 @@
+name: Teamchat
+version: '${project.version}'
+main: owo.carrot.teamchat.Teamchat
+api-version: 1.18
+authors: [ Carrotw ]
+description: Team Chat
