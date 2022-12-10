@@ -6,11 +6,19 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import owo.carrot.teamchat.Commands.AdminCommands;
+import owo.carrot.teamchat.Commands.PublicCommands;
 import owo.carrot.teamchat.Listeners.JoinOrLeaveServer;
+import owo.carrot.teamchat.Listeners.onTeamChat;
+import owo.carrot.teamchat.Utils.TeamUtils;
 import owo.carrot.teamchat.Utils.Utils;
 import owo.carrot.teamchat.Utils.YamlFiles;
 
+import java.util.List;
+
 public final class Teamchat extends JavaPlugin {
+
+
+
 
     @Override
     public void onEnable() {
@@ -28,7 +36,8 @@ public final class Teamchat extends JavaPlugin {
 
     public void loadListener(){
         registerListeners(
-                new JoinOrLeaveServer()
+                new JoinOrLeaveServer(),
+                new onTeamChat()
         );
     }
 
@@ -40,7 +49,8 @@ public final class Teamchat extends JavaPlugin {
 
     public void loadCommands(){
         registerCommands(
-                new AdminCommands()
+                new AdminCommands(),
+                new PublicCommands()
         );
     }
 
@@ -49,6 +59,12 @@ public final class Teamchat extends JavaPlugin {
         for (Object command : commands) {
             commandManager.registerCommand((BaseCommand) command);
         }
+        commandManager.getCommandCompletions().registerAsyncCompletion("teamList" , c -> TeamUtils.listTeams());
+        commandManager.getCommandContexts().registerContext(Team.class, c -> {
+            String teamName = c.popFirstArg();
+            return new Team(teamName);
+        });
+        commandManager.getCommandCompletions().registerCompletion("playerTeamList" , c -> TeamUtils.getTeamPlayers(String.valueOf(Team.class)));
     }
 
 }

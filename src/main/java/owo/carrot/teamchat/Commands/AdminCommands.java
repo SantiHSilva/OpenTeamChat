@@ -33,11 +33,32 @@ public class AdminCommands extends BaseCommand {
     }
 
     @Subcommand("addPlayer")
-    @CommandCompletion("equipo @players")
+    @CommandCompletion("@teamList @players @nothing")
     public void addPlayer(Player p, String equipo, String[] target) {
-        if(TeamUtils.verifyTeam(equipo)){
+        if(TeamUtils.verifyTeam(equipo.replace("-", " "))) {
             p.sendMessage("Añadiendo a " + target[0] + " al equipo " + equipo);
-            TeamUtils.addPlayer(p, equipo, target[0]);
+            TeamUtils.addORemovePlayer(p, equipo, target[0], false);
+        } else {
+            p.sendMessage("El equipo " + equipo + " no existe");
+        }
+    }
+
+    @Subcommand("removePlayer")
+    @CommandCompletion("@teamList @players @nothing")
+    public void removePlayer(Player p, String equipo, String[] target){
+        if(TeamUtils.verifyTeam(equipo.replace("-", " "))) {
+            p.sendMessage("Quitando a " + target[0] + " del equipo " + equipo);
+            TeamUtils.addORemovePlayer(p, equipo, target[0], true);
+        } else {
+            p.sendMessage("El equipo " + equipo + " no existe");
+        }
+    }
+
+    @Subcommand("listMembers")
+    @CommandCompletion("@teamList")
+    public void listMembers(Player p, String equipo) {
+        if(TeamUtils.verifyTeam(equipo.replace("-", " "))) {
+            p.sendMessage("Miembros del equipo " + equipo.replace("-", " ") + ": " + TeamUtils.getTeamPlayers(equipo.replace("-", " ")));
         } else {
             p.sendMessage("El equipo " + equipo + " no existe");
         }
